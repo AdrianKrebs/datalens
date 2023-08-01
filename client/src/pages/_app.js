@@ -11,6 +11,9 @@ export default function App({ Component, pageProps }) {
               :root {
                 --font-dm: ${dmSans.style.fontFamily};
               }
+              html {
+          font-family: ${dmSans.style.fontFamily};
+        }
             `}</style>
       <Component {...pageProps} />
     </main>

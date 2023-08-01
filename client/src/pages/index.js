@@ -261,15 +261,15 @@ export default function ShowcaseHN() {
                                 </div>
                             </div>
                             <a href="#" className="btn-outline k-delete shrink-0">
-                                <TrashSimple weight="bold" className="text-orange-600"/>
+                                <TrashSimple onClick={() => handleDeleteClick(i)} weight="bold" className="text-orange-600"/>
                             </a>
                         </div>
                         <hr/>
                     </div>
                 ))}
 
-            <Transition.Root show={propertyMode === "edit"} as={Fragment}>
-                <Dialog as="div" className="relative z-10" onClose={() => {
+            <Transition.Root show={propertyMode === "edit" || propertyMode === "add"} as={Fragment}>
+                <Dialog as="div" className="relative z-10 font-normal" onClose={() => {
                 }}>
                     <Transition.Child
                         as={Fragment}
@@ -277,24 +277,18 @@ export default function ShowcaseHN() {
                         <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"/>
                     </Transition.Child>
 
-                    <div className="fixed inset-0 z-10 overflow-y-auto">
+                    <div className="fixed inset-0 z-10 overflow-y-auto font-sans">
                         <div
                             className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                             <Transition.Child
                                 as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                enterTo="opacity-100 translate-y-0 sm:scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                             >
                                 <Dialog.Panel
                                     className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
 
                                     <div
-                                        className="grid auto-rows-min gap-2 bg-stone-100 p-2">
-                                        <div className="font-serif text-xl font-medium">
+                                        className="grid auto-rows-min gap-2 p-2">
+                                        <div className="text-xl font-medium">
                                             {propertyMode === 'edit'
                                                 ? 'Edit a property'
                                                 : 'Add a property'}
@@ -365,11 +359,18 @@ export default function ShowcaseHN() {
                 <div className="absolute top-0 left-0 p-2">
                     <Plus weight="bold" className="text-stone-400"/>
                 </div>
-                {/* dropdown */}
-                <div className="relative cursor-pointer btn-ghost">
+                {/* dropdown TODO replace with variables*/}
+                <button className="relative cursor-pointer btn-ghost" onClick={() => {
+                    setPropertyMode("add")
+                    setFormData({
+                        ...formData,
+                        name: "Position",
+
+                    })
+                }}>
                     Position
                     <CaretDown weight="bold" className="text-stone-400"/>
-                </div>
+                </button>
                 <div className="relative cursor-pointer btn-ghost">
                     Relocation
                     <CaretDown weight="bold" className="text-stone-400"/>
@@ -383,15 +384,7 @@ export default function ShowcaseHN() {
                     <CaretDown weight="bold" className="text-stone-400"/>
                 </div>
                 <div className="relative cursor-pointer btn-ghost">
-                    Schedule
-                    <CaretDown weight="bold" className="text-stone-400"/>
-                </div>
-                <div className="relative cursor-pointer btn-ghost">
-                    Salary range
-                    <CaretDown weight="bold" className="text-stone-400"/>
-                </div>
-                <div className="relative cursor-pointer btn-ghost">
-                    Equity
+                    Salary
                     <CaretDown weight="bold" className="text-stone-400"/>
                 </div>
                 <div className="relative cursor-pointer btn-ghost">
@@ -442,53 +435,11 @@ export default function ShowcaseHN() {
                     {jobResults?.length === 0 && loading === false && submitted && (
                         <p className="text-center">No results</p>
                     )}
-                    {!loading && submitted && !subscribed && (
-                        <div className="mx-auto max-w-xl">
-                            <form onSubmit={(e) => subscribe(e)} className="mt-5">
-                                <div className="flex">
-                                    <div className="">
-                                        Get notified when we find jobs for your preferences
-                                    </div>
-                                </div>
-                                <input
-                                    name="email"
-                                    value={email}
-                                    type="email"
-                                    className="text-black"
-                                    placeholder={'your email'}
-                                    required
-                                    onChange={(event) => setEmail(event.target.value)}
-                                />
-                                <button
-                                    type="submit"
-                                    className="mt-2 flex cursor-pointer justify-center rounded-md border border-transparent bg-white px-4 py-2 font-medium text-aubergine shadow-sm hover:bg-violet-800 disabled:bg-gray-400"
-                                >
-                                    Subscribe
-                                </button>
-                            </form>
-                        </div>
-                    )}
                 </div>
-                {subscribed && submitted && (
-                    <p className={'p-5 text-center'}>Thanks for subscribing!</p>
-                )}
             </div>
-            {/*<!-- spacer: desktop  -->*/}
-            <div className="hidden h-12 w-full border-white bg-aubergine lg:flex lg:border-r-[48px]"/>
-            {/*<!-- wave -->*/}
-            <div className="hidden w-full bg-white lg:flex">
-                <div className="h-3 flex-1 rounded-br-xl bg-aubergine"/>
-                <div className="h-3 w-3 flex-none bg-white lg:w-12"/>
-            </div>
-            <div className="hidden w-full bg-aubergine lg:flex">
-                <div className="h-3 w-3 flex-none bg-aubergine lg:w-12"/>
-                <div className="h-3 flex-1 rounded-tl-xl bg-white"/>
-            </div>
-            {/*-- spacer: desktop  -->*/}
-            <div className="hidden h-12 w-full border-aubergine bg-white lg:flex lg:border-l-[48px]"/>
             {/*<!-- block: q&a -->*/}
-            <div className="border-aubergine px-4 py-12 lg:border-l-[48px] lg:p-12">
-                <div className="mx-auto flex w-full max-w-7xl flex-col gap-12 bg-white lg:pr-[48px]">
+            <div className="px-4 py-12  lg:p-12">
+                <div className="mx-auto flex w-full max-w-7xl flex-col gap-12 bg-white ">
                     <div className="w-full text-center text-3xl font-medium lg:text-5xl">
                         q&amp;a
                     </div>
@@ -501,14 +452,6 @@ export default function ShowcaseHN() {
                         </div>
                     ))}
                 </div>
-            </div>
-            {' '}
-            {/*<!-- spacer: desktop  -->*/}
-            <div className="hidden h-12 w-full border-aubergine bg-white lg:flex lg:border-l-[48px]"/>
-            {/*<!-- wave -->*/}
-            <div className="hidden w-full bg-aubergine lg:flex">
-                <div className="h-3 w-3 flex-none bg-aubergine lg:w-12"/>
-                <div className="h-3 flex-1 rounded-bl-xl bg-white"/>
             </div>
         </div>
     )
