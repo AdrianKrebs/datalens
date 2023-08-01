@@ -1,0 +1,10 @@
+Flask-Cors==3.0.10
+openai==0.27.8
+python-dotenv==1.0.0
+numpy==1.23.2
+scikit-learn==1.1.2
+flask>=1.1.4
+tiktoken==0.1.2
+gunicorn==20.0.4
+pymongo
+Flask-Limiter

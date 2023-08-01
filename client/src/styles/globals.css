@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*:focus {
+    @apply outline-offset-4 outline-violet-400/30;
+}
+
+li::marker {
+    @apply text-slate-400;
+}
+
+.btn-primary {
+    @apply flex items-center justify-center gap-2 px-2 py-1 leading-6 text-left rounded bg-aubergine text-white hover:bg-violet-600 disabled:bg-gray-400
+}
+
+.btn-outline {
+    @apply flex items-center justify-center gap-2 px-2 py-1 leading-6 border border-slate-200 text-left text-slate-700 rounded bg-white hover:bg-slate-200
+}
+
+.btn-ghost {
+    @apply flex items-center justify-center gap-2 px-2 py-1 leading-6 text-left bg-transparent border border-transparent rounded text-slate-700 hover:bg-slate-200 hover:border-slate-200;
+}
+
+.selected {
+    @apply bg-sunflower
+}
+
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="password"],
+textarea,
+select,
+.text-input {
+    @apply flex items-center  px-4 py-2 font-sans text-base font-medium bg-white border rounded shadow-sm border-violet-300;
+}
+
+table.match-qa th {
+    @apply px-3 py-2 text-xs font-normal text-left border-b text-slate-500 border-slate-200 bg-slate-100;
+}
+table.match-qa td {
+    @apply p-3 text-left align-top border-b border-slate-200;
+}
+
+table.table th {
+    @apply p-3 text-xs font-normal leading-relaxed text-right align-text-top border-b text-slate-500 border-slate-200;
+}
+table.table td {
+    @apply p-3 text-sm font-normal leading-relaxed text-right align-text-top border-r text-slate-600 border-slate-200;
+}
+table.table tr:nth-child(even) {
+    @apply bg-white;
+}
+table.table td:last-child {
+    @apply !border-none
+}
+
+.shimmer::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transform: translateX(-100%);
+    background-image: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 1) 0,
+      rgba(255, 255, 255, 0.9) 50%,
+      rgba(255, 255, 255, 0.8) 100%
+    );
+    animation: shimmer 3s ease-out infinite;
+    content: "";
+  }
+  
+  @keyframes shimmer {
+    100% {
+      transform: translateX(0%);
+      opacity: 0;
+    }
+  }
+  
