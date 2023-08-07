@@ -1,13 +1,15 @@
-# File Q&A with Next.js and Flask
+# Datalens
 
-File Q&A is a web app that lets you find answers in your files. You can upload files and ask questions related to their content, and the app will use embeddings and GPT to generate answers from the most relevant files. \
+Datalens is a web app that lets you filter any data with LLMs. 
+You can define any criteria and and input source, and the app will use an LLM model like GPT or Claude to surface the relevant data for your criteria.
+
+The current version is limited to job data, but future version will let you assess other data types like events, news, or any other data.
 
 ## Requirements
 
 To run the app, you need:
 
-- An OpenAI API key. You can create a new API key [here](https://beta.openai.com/account/api-keys).
-- A Pinecone API key and index name. You can create a new account and index [here](https://www.pinecone.io/).
+- An OpenAI API or Anthropic Claude key.
 - Python 3.7 or higher and pipenv for the Flask server.
 - Node.js and npm for the Next.js client.
 
@@ -15,13 +17,13 @@ To run the app, you need:
 
 ### Server
 
-Fill out the config.yaml file with your Pinecone API key, index name and environment.
+Copy the .env.example file and fill it out.
 
 Run the Flask server:
 
 ```
 cd server
-bash script/start "<your OPENAI_API_KEY>"
+py main
 ```
 
 ### Client
@@ -42,6 +44,5 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the app.
 
-## Limitations
+## Powered by [Kadoa.com](https://kadoa.com)
 
-The app may sometimes generate answers that are not in the files, or hallucinate about the existence of files that are not uploaded.

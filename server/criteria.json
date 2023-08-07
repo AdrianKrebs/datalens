@@ -1,1 +1,1 @@
-[{"name": "is the remote or on site", "description": "", "criteria": "remote"}, {"name": "user location", "criteria": "Germany"}, {"name": "technology requirements", "description": "", "criteria": "GraphQL, Java, React"}]
+[{"name": "remote or on site", "description": "", "criteria": "remote"}, {"criteria": "Switzerland", "name": "user location"}, {"criteria": "GraphQL, Java, React, Postgres", "description": "", "name": "technology requirements"}, {"name": "Salary", "description": "", "criteria": "More than 100k"}]

@@ -2,7 +2,7 @@ import Image from 'next/image'
 import {
     CaretRight,
     ArrowSquareOut,
-    TrashSimple, CaretDown, Plus,
+    TrashSimple, CaretDown, Plus, PencilSimple,
 } from 'phosphor-react'
 import React, {Fragment, useEffect, useRef, useState} from 'react'
 import axios from 'axios'
@@ -14,7 +14,7 @@ const extractOptions = [
     'Ask HN: Who is hiring? (July 2023)',
     'Ask HN: Who is hiring? (June 2023)',
 ]
-const types = ['remote', 'on site', 'hybrid']
+const suggestions = ['Industry', 'Position', 'Visa Sponsorship', 'Salary']
 
 const faqs = [
     {
@@ -128,6 +128,7 @@ export default function ShowcaseHN() {
         }
         setFields(newFields)
         setPropertyMode(null)
+        setFormData({name: '', description: '', criteria: ''})
     }
 
     const handleCancelClick = () => {
@@ -245,27 +246,31 @@ export default function ShowcaseHN() {
                 "Who's Hiring" monthly threads.
             </div>
             <div className="">
-                To start, select a suggested property or add an arbitrary property.
+                To start, add at least one property.
             </div>
+            <hr/>
             {fields &&
                 fields.map((f, i) => (
-                    <div key={i}>
-                        <div className="flex flex-wrap gap-2">
+                    <>
+                        <div key={i} className="flex flex-wrap gap-2">
                             <div
-                                className="flex flex-wrap flex-1 gap-2 p-1 pl-4 rounded place-items-center bg-stone-100">
+                                className="flex flex-wrap flex-1 gap-2 px-4 py-2 rounded place-items-center bg-stone-100">
                                 <div className="flex-1">{f.name}</div>
-                                <div className="font-bold btn-ghost shrink-0">
+                                <div className="font-medium shrink-0">
                                     {f.criteria}
-                                    <CaretDown weight="bold" className="text-stone-400"
-                                               onClick={() => handleEditClick(f, i)}/>
                                 </div>
                             </div>
-                            <a href="#" className="btn-outline k-delete shrink-0">
-                                <TrashSimple onClick={() => handleDeleteClick(i)} weight="bold" className="text-orange-600"/>
-                            </a>
+                            <button onClick={() => handleEditClick(f, i)} className="btn-outline shrink-0">
+                                <PencilSimple weight="bold"/>
+                            </button>
+                            <button className="btn-outline k-delete shrink-0">
+                                <TrashSimple onClick={() => handleDeleteClick(i)} weight="bold"
+                                             className="text-orange-600"/>
+                            </button>
                         </div>
                         <hr/>
-                    </div>
+
+                    </>
                 ))}
 
             <Transition.Root show={propertyMode === "edit" || propertyMode === "add"} as={Fragment}>
@@ -360,37 +365,28 @@ export default function ShowcaseHN() {
                     <Plus weight="bold" className="text-stone-400"/>
                 </div>
                 {/* dropdown TODO replace with variables*/}
+                {suggestions.map((s, i) => (
+                    <button key={i} className="relative cursor-pointer btn-ghost" onClick={() => {
+                        setPropertyMode("add")
+                        setFormData({
+                            ...formData,
+                            name: s,
+
+                        })
+                    }}>
+                        {s}
+                    </button>
+                ))}
                 <button className="relative cursor-pointer btn-ghost" onClick={() => {
                     setPropertyMode("add")
                     setFormData({
                         ...formData,
-                        name: "Position",
+                        name: "",
 
                     })
                 }}>
-                    Position
-                    <CaretDown weight="bold" className="text-stone-400"/>
+                    Any property
                 </button>
-                <div className="relative cursor-pointer btn-ghost">
-                    Relocation
-                    <CaretDown weight="bold" className="text-stone-400"/>
-                </div>
-                <div className="relative cursor-pointer btn-ghost">
-                    Industry
-                    <CaretDown weight="bold" className="text-stone-400"/>
-                </div>
-                <div className="relative cursor-pointer btn-ghost">
-                    Visa
-                    <CaretDown weight="bold" className="text-stone-400"/>
-                </div>
-                <div className="relative cursor-pointer btn-ghost">
-                    Salary
-                    <CaretDown weight="bold" className="text-stone-400"/>
-                </div>
-                <div className="relative cursor-pointer btn-ghost">
-                    Add an arbitrary property
-                    <CaretDown weight="bold" className="text-stone-400"/>
-                </div>
             </div>
             <button disabled={loading}
                     onClick={handleSubmit}
@@ -435,22 +431,6 @@ export default function ShowcaseHN() {
                     {jobResults?.length === 0 && loading === false && submitted && (
                         <p className="text-center">No results</p>
                     )}
-                </div>
-            </div>
-            {/*<!-- block: q&a -->*/}
-            <div className="px-4 py-12  lg:p-12">
-                <div className="mx-auto flex w-full max-w-7xl flex-col gap-12 bg-white ">
-                    <div className="w-full text-center text-3xl font-medium lg:text-5xl">
-                        q&amp;a
-                    </div>
-                    {faqs.map((faq, key) => (
-                        <div className="grid gap-4 lg:flex lg:gap-24" key={key}>
-                            <div className="w-full max-w-xs flex-none text-lg font-medium text-electra">
-                                {faq.q}
-                            </div>
-                            <div className="flex-1">{faq.a}</div>
-                        </div>
-                    ))}
                 </div>
             </div>
         </div>

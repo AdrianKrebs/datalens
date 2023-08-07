@@ -6,5 +6,6 @@ scikit-learn==1.1.2
 flask>=1.1.4
 tiktoken==0.1.2
 gunicorn==20.0.4
+anthropic==0.3.8
 pymongo
 Flask-Limiter
