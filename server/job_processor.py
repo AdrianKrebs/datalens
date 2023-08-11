@@ -44,6 +44,12 @@ def map_frontend_to_api(frontend_criteria):
     return api_criteria
 
 
+def calculate_total_score(results, criteria):
+    weights = [2 if c['type'] == 'must' else 1 for c in criteria]
+    individual_scores = [results[c['name'].replace(' ', '_').lower()] for c in criteria]
+    total_score = sum(s * w for s, w in zip(individual_scores, weights)) / sum(weights)
+    return total_score
+
 def assessJobs(properties):
     url = 'http://hn.algolia.com/api/v1/items/36956867'
     response = requests.get(url)
@@ -55,7 +61,7 @@ def assessJobs(properties):
         print(f"Failed to fetch data. Status code: {response.status_code}")
         return
 
-    jobs = children_posts[:10]
+    jobs = children_posts[:50]
 
     # Load previously analyzed jobs if the file exists
     try:
@@ -63,7 +69,6 @@ def assessJobs(properties):
             previous_criteria = json.load(json_file_criteria)
     except FileNotFoundError:
         previous_criteria = None
-        previous_ids = []
 
         # Check if the criteria have changed
     criteria_changed = previous_criteria != properties
@@ -71,15 +76,17 @@ def assessJobs(properties):
     results = []
     schema = map_frontend_to_api(properties)
     for job in jobs:
-        if not criteria_changed:
-            continue
         try:
             res = use_claude(job, schema, properties)
+            total_score = calculate_total_score(res, properties)
+
             results.append({"id": job["id"], "text": job["text"], "result": res,
-                            "totalScore": sum(res.values())})
+                            "totalScore": total_score})
         except Exception as e:
-            logging.info(f"[get_answer_from_files] error: {e}")
-            return str(e)
+            logging.info(f"[calling LLM] error: {e}")
+            continue
+
+
     with open('results.json', 'w') as json_file_results:
         json.dump(results, json_file_results)
     with open('criteria.json', 'w') as json_file_criteria:

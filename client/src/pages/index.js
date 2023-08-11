@@ -106,10 +106,10 @@ export default function ShowcaseHN() {
     ])
 
     const [selectedProperty, setSelectedProperty] = useState(null)
-    const [formData, setFormData] = useState({name: '', description: '', criteria: ''})
+    const [formData, setFormData] = useState({name: '', description: '', type: '', criteria: ''})
 
     const handleEditClick = (property, index) => {
-        setFormData({name: property.name, description: property.description, criteria: property.criteria}) // Populate this with real data
+        setFormData({name: property.name, description: property.description, type: property.type, criteria: property.criteria}) // Populate this with real data
         setSelectedProperty(index)
         setPropertyMode('edit')
     }
@@ -128,7 +128,7 @@ export default function ShowcaseHN() {
         }
         setFields(newFields)
         setPropertyMode(null)
-        setFormData({name: '', description: '', criteria: ''})
+        setFormData({name: '', description: '', criteria: '', type: ''})
     }
 
     const handleCancelClick = () => {
@@ -213,7 +213,7 @@ export default function ShowcaseHN() {
             <div
                 className="flex w-full gap-2 bg-white border-2 rounded flex-nowrap place-items-center border-aubergine">
                 <div className="flex-1 px-3 py-2 text-2xl font-medium text-aubergine">
-                    Who is Hiring?
+                    Datalens
                 </div>
                 <div className="flex gap-2 p-2 leading-none text-white shrink-0 place-items-center bg-aubergine">
                     <div className="text-sm font-bold">by</div>
@@ -251,10 +251,10 @@ export default function ShowcaseHN() {
             <hr/>
             {fields &&
                 fields.map((f, i) => (
-                    <>
+                    <div key={i} className="grid gap-4">
                         <div key={i} className="flex flex-wrap gap-2">
                             <div
-                                className="flex flex-wrap flex-1 gap-2 px-4 py-2 rounded place-items-center bg-stone-100">
+                                className="flex flex-wrap flex-1 px-4 py-2 rounded place-items-center bg-stone-100">
                                 <div className="flex-1">{f.name}</div>
                                 <div className="font-medium shrink-0">
                                     {f.criteria}
@@ -270,7 +270,7 @@ export default function ShowcaseHN() {
                         </div>
                         <hr/>
 
-                    </>
+                    </div>
                 ))}
 
             <Transition.Root show={propertyMode === "edit" || propertyMode === "add"} as={Fragment}>
@@ -335,6 +335,23 @@ export default function ShowcaseHN() {
                                             }
                                             className="w-full"
                                         />
+                                        <hr className="my-2 w-full bg-slate-300"/>
+                                        <div className="flex items-center">
+                                            <input
+                                                type="checkbox"
+                                                checked={formData.type === 'must'}
+                                                onChange={(event) =>
+                                                    setFormData({
+                                                        ...formData,
+                                                        type: event.target.checked ? 'must' : '',
+                                                    })
+                                                }
+                                                className="mr-2"
+                                            />
+                                            <div className="text-xs font-medium uppercase">
+                                                Mark as must criteria
+                                            </div>
+                                        </div>
                                         <hr className="my-2 w-full bg-slate-300"/>
                                         <div className="flex w-full gap-1">
                                             <button
@@ -407,8 +424,20 @@ export default function ShowcaseHN() {
                             {jobResults.map((job) => (
                                 <li
                                     key={job._id}
-                                    className="flex items-start max-w-full gap-2 px-4 py-3 overflow-x-auto border-2 rounded cursor-pointer flex-nowrap border-aubergine hover:bg-stone-100"
+                                    className="flex flex-col items-start max-w-full gap-2 px-4 py-3 overflow-x-auto border-2 rounded cursor-pointer flex-nowrap border-aubergine hover:bg-stone-100"
                                 >
+                                    <div className="flex space-x-1">
+                                        <span
+                                            className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+        total: {job.totalScore}
+      </span>
+                                        {Object.entries(job.result).map(([key, value]) => (
+                                            <span
+                                                className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+        {key}: {value}
+      </span>
+                                        ))}
+                                    </div>
                                     <div
                                         className="flex-1"
                                         dangerouslySetInnerHTML={{
