@@ -70,38 +70,32 @@ export default function ShowcaseHN() {
     const [propertyMode, setPropertyMode] = useState(null)
     const [fields, setFields] = useState([
         {
-            name: 'remoteOrOnSite',
+            name: 'remote_from_where',
             description:
                 "",
-            criteria: ''
-        },
-        {
-            name: 'location',
-            criteria: ''
+            criteria: '',
+            type: 'must'
         },
         {
             name: 'technologies',
             description:
                 "",
-            criteria: ''
+            criteria: '',
+            type: "",
         },
         {
             name: 'industry',
             description:
                 "",
-            criteria: ''
-        },
-        {
-            name: 'roleType',
-            description:
-                "",
-            criteria: ''
+            criteria: '',
+            type: "",
         },
         {
             name: 'salary',
             description:
                 "",
-            criteria: ''
+            criteria: '',
+            type: "",
         },
     ])
 
@@ -114,7 +108,8 @@ export default function ShowcaseHN() {
         setPropertyMode('edit')
     }
 
-    const handleDeleteClick = (index) => {
+    const handleDeleteClick = (event, index) => {
+        event.preventDefault();
         const newFields = fields.filter((field, i) => i !== index)
         setFields(newFields)
     }
@@ -163,7 +158,7 @@ export default function ShowcaseHN() {
         try {
             const res = await axios.post(`${SERVER_ADDRESS}/analyze`, {fields})
             const data = res.data
-            setJobResults(data.results.sort((a, b) => b.totalScore - a.totalScore))
+            setJobResults(data.results.sort((a, b) => b.relevanceScore - a.relevanceScore))
             setJobCount(data.results?.length)
         } catch (error) {
             console.error(error)
@@ -178,7 +173,7 @@ export default function ShowcaseHN() {
         try {
             const res = await axios.get(`${SERVER_ADDRESS}/load`)
             const data = res.data
-            setJobResults(data.results.sort((a, b) => b.totalScore - a.totalScore))
+            setJobResults(data.results.sort((a, b) => b.relevanceScore - a.relevanceScore))
             if (data.criteria?.length > 0) {
                 setFields(data.criteria);
             }
@@ -263,8 +258,8 @@ export default function ShowcaseHN() {
                             <button onClick={() => handleEditClick(f, i)} className="btn-outline shrink-0">
                                 <PencilSimple weight="bold"/>
                             </button>
-                            <button className="btn-outline k-delete shrink-0">
-                                <TrashSimple onClick={() => handleDeleteClick(i)} weight="bold"
+                            <button className="btn-outline k-delete shrink-0" onClick={(event) => handleDeleteClick(event,i)}>
+                                <TrashSimple weight="bold"
                                              className="text-orange-600"/>
                             </button>
                         </div>
@@ -300,7 +295,7 @@ export default function ShowcaseHN() {
                                         </div>
                                         <hr className="my-2 w-full bg-slate-300"/>
                                         <div className="flex w-full gap-2">
-                                            <div className="flex-1 text-xs font-medium uppercase">
+                                            <div className="flex-1 font-medium">
                                                 Name of the property
                                             </div>
                                         </div>
@@ -319,7 +314,7 @@ export default function ShowcaseHN() {
                                         />
                                         <hr className="my-2 w-full bg-slate-300"/>
                                         <div className="flex w-full gap-2">
-                                            <div className="flex-1 text-xs font-medium uppercase">
+                                            <div className="flex-1 font-medium">
                                                 Value of the property
                                             </div>
                                         </div>
@@ -348,7 +343,7 @@ export default function ShowcaseHN() {
                                                 }
                                                 className="mr-2"
                                             />
-                                            <div className="text-xs font-medium uppercase">
+                                            <div className="font-medium">
                                                 Mark as must criteria
                                             </div>
                                         </div>
@@ -429,7 +424,7 @@ export default function ShowcaseHN() {
                                     <div className="flex space-x-1">
                                         <span
                                             className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
-        total: {job.totalScore}
+        relevance: {job.relevanceScore.toFixed(2)}
       </span>
                                         {Object.entries(job.result).map(([key, value]) => (
                                             <span

@@ -44,11 +44,11 @@ def map_frontend_to_api(frontend_criteria):
     return api_criteria
 
 
-def calculate_total_score(results, criteria):
+def calculate_relevance_score(results, criteria):
     weights = [2 if c['type'] == 'must' else 1 for c in criteria]
     individual_scores = [results[c['name'].replace(' ', '_').lower()] for c in criteria]
-    total_score = sum(s * w for s, w in zip(individual_scores, weights)) / sum(weights)
-    return total_score
+    relevance_score = sum(s * w for s, w in zip(individual_scores, weights)) / sum(weights)
+    return relevance_score
 
 def assessJobs(properties):
     url = 'http://hn.algolia.com/api/v1/items/36956867'
@@ -61,7 +61,7 @@ def assessJobs(properties):
         print(f"Failed to fetch data. Status code: {response.status_code}")
         return
 
-    jobs = children_posts[:50]
+    jobs = children_posts[:100]
 
     # Load previously analyzed jobs if the file exists
     try:
@@ -77,11 +77,11 @@ def assessJobs(properties):
     schema = map_frontend_to_api(properties)
     for job in jobs:
         try:
-            res = use_claude(job, schema, properties)
-            total_score = calculate_total_score(res, properties)
+            res = use_openai(job, schema, properties)
+            relevance_score = calculate_relevance_score(res, properties)
 
             results.append({"id": job["id"], "text": job["text"], "result": res,
-                            "totalScore": total_score})
+                            "relevanceScore": relevance_score})
         except Exception as e:
             logging.info(f"[calling LLM] error: {e}")
             continue
@@ -95,7 +95,7 @@ def assessJobs(properties):
 
 
 def use_claude(job, schema, properties):
-    prompt = f"{HUMAN_PROMPT} You're a helpful job search assistant, helping me cut through job postings that fit my criteria. You will be provided with a job description. Your task is to evaluate how well the job aligns with each of the specified filter criteria. The output should be a likelihood score ranging from 0 to 1 (where 0 indicates no fit, and 1 indicates a perfect fit), formatted in JSON. Please note that the score should not exceed 1. In situations where the job description doesn't contain any information related to a given criterion, assign a score of 0 to it. If the job only partly fits a specific criterion, use a lower number like 0.5 and not 1.0. Only respond in valid JSON format in this schema {schema}. List of Criteria: {properties}. Now, please analyze the following job posting and provide the scores: {job['text']}{AI_PROMPT}"
+    prompt = f"{HUMAN_PROMPT} You're a helpful job search assistant, helping me cut through job postings that fit my criteria. You will be provided with a job description. Your task is to evaluate how well the job aligns with each of the specified filter criteria. The output should be a likelihood score ranging from 0 to 1 (where 0 indicates no fit, and 1 indicates a perfect fit), formatted in JSON. If a criterion is marked as \"must\" it has a higher importance and will weigh more in the total score. Please note that the score should not exceed 1. In situations where the job description doesn't contain any information related to a given criterion, assign a score of 0 to it. If the job only partly fits a specific criterion, use a lower number like 0.5 and not 1.0. Only respond in valid JSON format in this schema {schema}. List of Criteria: {properties}. Now, please analyze the following job posting and provide the scores: {job['text']}{AI_PROMPT}"
 
     completion = anthropic.completions.create(
         model="claude-2",
