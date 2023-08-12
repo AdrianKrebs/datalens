@@ -1,7 +1,5 @@
 import Image from 'next/image'
 import {
-    CaretRight,
-    ArrowSquareOut,
     TrashSimple, CaretDown, Plus, PencilSimple,
 } from 'phosphor-react'
 import React, {Fragment, useEffect, useRef, useState} from 'react'
@@ -10,61 +8,13 @@ import {SERVER_ADDRESS} from "../types/constants";
 import kadoaLogo from "../../public/kadoa-logo.svg";
 import {Dialog, Transition} from '@headlessui/react'
 
-const extractOptions = [
-    'Ask HN: Who is hiring? (July 2023)',
-    'Ask HN: Who is hiring? (June 2023)',
-]
-const suggestions = ['Industry', 'Position', 'Visa Sponsorship', 'Salary']
-
-const faqs = [
-    {
-        q: 'How does this work?',
-        a: (
-            <p>
-                One of the superpowers of LLMs is reformatting information from any
-                format X to any other format Y. We leverage this to map all the
-                unstructured job postings into the same unified structure. The new GPT
-                functions feature and the extended context windows are really helpful
-                for this. Instead of having to build a custom NER pipeline, it works
-                very well with GPT out-of-the box.
-            </p>
-        ),
-    },
-    {
-        q: 'Can I add more sources?',
-        a: (
-            <p>
-                You'll be able to fully customize your job sources soon, including the
-                ability to add your preferred companies.
-            </p>
-        ),
-    },
-    {
-        q: "What's next?",
-        a: (
-            <p>
-                Personalize monitoring for jobs, events, and real estate. Imagine using
-                AI to rate local events from multiple sources based on your preferences,
-                considering factors like your interests and distance from home.
-                <br/>
-                Email hello@kadoa.com for feedback.
-            </p>
-        ),
-    },
-]
+const suggestions = ['Industry', 'Visa Sponsorship', 'Salary']
 
 export default function ShowcaseHN() {
-    const [location, setLocation] = useState('')
-    const [email, setEmail] = useState('')
-    const [type, setType] = useState('')
-    const [sources, setSources] = useState(['Ask HN: Who is hiring? (July 2023)'])
     const [loading, setLoading] = useState(false)
-    const [sortProperty, setSortProperty] = useState(''); // State to manage selected sort property
-
     const [error, setError] = useState('')
     const [success, setSuccess] = useState(false)
     const [submitted, setSubmitted] = useState(false)
-    const [subscribed, setSubscribed] = useState(false)
     const [jobResults, setJobResults] = useState([])
     const [jobCount, setJobCount] = useState(0)
     const [propertyMode, setPropertyMode] = useState(null)
@@ -103,7 +53,12 @@ export default function ShowcaseHN() {
     const [formData, setFormData] = useState({name: '', description: '', type: '', criteria: ''})
 
     const handleEditClick = (property, index) => {
-        setFormData({name: property.name, description: property.description, type: property.type, criteria: property.criteria}) // Populate this with real data
+        setFormData({
+            name: property.name,
+            description: property.description,
+            type: property.type,
+            criteria: property.criteria
+        }) // Populate this with real data
         setSelectedProperty(index)
         setPropertyMode('edit')
     }
@@ -130,21 +85,9 @@ export default function ShowcaseHN() {
         setPropertyMode(null)
     }
 
-    const handleAddClick = () => {
-        setFormData({name: '', description: '', criteria: ''})
-        setPropertyMode('add')
-    }
-
     useEffect(() => {
         load()
     }, [])
-
-
-    const handleSort = (property) => {
-        const sortedResults = [...jobResults].sort((a, b) => b.result[property] - a.result[property]);
-        setJobResults(sortedResults);
-        setSortProperty(property);
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -185,23 +128,6 @@ export default function ShowcaseHN() {
         }
     }
 
-
-    const getColor = (value) => {
-        //value from 0 to 1
-        if (value === 0) {
-            return "bg-slate-50"
-        }
-        if (value > 0.0 && value < 0.5) {
-            return "bg-teal-50"
-        }
-        if (value >= 0.5 && value < 1.0) {
-            return "bg-emerald-100"
-        }
-        if (value === 1.0) {
-            return "bg-green-400"
-        }
-    }
-
     return (
         <div
             className="grid w-full max-w-2xl gap-4 p-2 mx-auto antialiased font-normal leading-relaxed bg-white auto-rows-min scroll-smooth text-slate-800 sm:p-4">
@@ -223,22 +149,9 @@ export default function ShowcaseHN() {
                 </div>
             </div>
             <div className="">
-                Looking for an IT job? Save time and use{' '}
-                <a
-                    href=""
-                    className="underline decoration-aubergine/50 hover:bg-sunflower"
-                >
-                    Kadoa
-                </a>
-                's AI-powered tool to search{' '}
-                <a
-                    href="https://news.ycombinator.com/"
-                    target="_blank"
-                    className="underline decoration-aubergine/50 hover:bg-sunflower"
-                >
-                    Hacker News'
-                </a>
-                "Who's Hiring" monthly threads.
+                LLMs are really good at assessing unstructured data. This is an experiment to rank job postings by
+                relevance for the specified criteria, without having to go through countless filter options.
+                The current data source is the most recent "Who's Hiring" thread from Hacker News (more to come).
             </div>
             <div className="">
                 To start, add at least one property.
@@ -258,7 +171,8 @@ export default function ShowcaseHN() {
                             <button onClick={() => handleEditClick(f, i)} className="btn-outline shrink-0">
                                 <PencilSimple weight="bold"/>
                             </button>
-                            <button className="btn-outline k-delete shrink-0" onClick={(event) => handleDeleteClick(event,i)}>
+                            <button className="btn-outline k-delete shrink-0"
+                                    onClick={(event) => handleDeleteClick(event, i)}>
                                 <TrashSimple weight="bold"
                                              className="text-orange-600"/>
                             </button>
@@ -410,7 +324,7 @@ export default function ShowcaseHN() {
             {/*<!-- block: ready to try? -->*/}
             <div className="">
                 <div className="">
-                    {loading && <p className="text-center">Searching...</p>}
+                    {loading && <p className="text-center">Searching...<br/> Note: this can a few minutes</p>}
                     {jobResults?.length > 0 && !loading && (
                         <ul
                             role="list"
@@ -439,15 +353,6 @@ export default function ShowcaseHN() {
                                             __html: job.text,
                                         }}
                                     />
-                                    <a
-                                        target="_blank"
-                                        href={
-                                            'https://news.ycombinator.com/item?id=' +
-                                            job.hnId
-                                        }
-                                    >
-                                        <ArrowSquareOut weight="bold"/>
-                                    </a>
                                 </li>
                             ))}
                         </ul>

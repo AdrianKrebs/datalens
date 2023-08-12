@@ -50,6 +50,7 @@ def calculate_relevance_score(results, criteria):
     relevance_score = sum(s * w for s, w in zip(individual_scores, weights)) / sum(weights)
     return relevance_score
 
+
 def assessJobs(properties):
     url = 'http://hn.algolia.com/api/v1/items/36956867'
     response = requests.get(url)
@@ -65,17 +66,23 @@ def assessJobs(properties):
 
     # Load previously analyzed jobs if the file exists
     try:
+        with open('results.json', 'r') as json_file_results:
+            previous_results = json.load(json_file_results)
         with open('criteria.json', 'r') as json_file_criteria:
             previous_criteria = json.load(json_file_criteria)
+        previous_ids = [result["id"] for result in previous_results]
     except FileNotFoundError:
         previous_criteria = None
+        previous_ids = []
 
         # Check if the criteria have changed
     criteria_changed = previous_criteria != properties
 
-    results = []
+    results = previous_results.copy()
     schema = map_frontend_to_api(properties)
     for job in jobs:
+        if not criteria_changed and job["id"] in previous_ids:
+            continue
         try:
             res = use_openai(job, schema, properties)
             relevance_score = calculate_relevance_score(res, properties)
@@ -85,7 +92,6 @@ def assessJobs(properties):
         except Exception as e:
             logging.info(f"[calling LLM] error: {e}")
             continue
-
 
     with open('results.json', 'w') as json_file_results:
         json.dump(results, json_file_results)
@@ -118,7 +124,7 @@ def use_openai(job, schema, properties):
             {"role": "system",
              "content": "You're a job search assistant."},
             {"role": "user",
-             "content": f"You will be provided with a job description. Your task is to evaluate how well the job aligns with each of the specified filter criteria. The output should be a likelihood score ranging from 0 to 1 (where 0 indicates no fit, and 1 indicates a perfect fit), formatted in JSON. Please note that the score should not exceed 1. In situations where the job description doesn't contain any information related to a given criterion, assign a score of 0 to it. If the job only partly fits a specific criterion, use a lower number like 0.5 and not 1.0. For the location, assign a score of 1 if the job is based in the user's home country, if it's remote with no geographical restrictions, or if it's remote and allows workers from the user's home continent. Assign a score of 0 if the job is remote but restricted to a different country or continent. \n Here are the criteria to consider: {properties}. \n Now, please analyze the following job posting and provide the scores from 0 - 1: \n {job['text']} "}
+             "content": f"You will be provided with a job description. Your task is to evaluate how well the job aligns with each of the specified filter criteria. The output should be a likelihood score ranging from 0 to 1 (where 0 indicates no fit, and 1 indicates a perfect fit), formatted in JSON. Please note that the score should not exceed 1. In situations where the job description doesn't contain any information related to a given criterion, assign a score of 0 to it. If the job only partly fits a specific criterion, use a lower number like 0.5 and not 1.0.  If a criterion is marked as \"must\" it has a higher importance and will weigh more in the total score. For the remote and location criteria, assign a score of 1 if the job is based in the user's home country, if it's remote with no geographical restrictions, or if it's remote and allows workers from the user's home continent. Assign a score of 0 if the job is remote but restricted to a different country or continent. \n Here are the criteria to consider: {properties}. \n Now, please analyze the following job posting and provide the scores from 0 - 1: \n {job['text']} "}
         ],
         temperature=0.05,
         max_tokens=256,
@@ -126,7 +132,7 @@ def use_openai(job, schema, properties):
         functions=[{"name": "classify_job", "parameters": schema}],
         function_call={"name": "classify_job"},
     )
-    print(completion["usage"]["total_tokens"])
+    print("tokens used: " + completion["usage"]["total_tokens"])
     result_schema = json.loads(completion.choices[0].message.function_call.arguments)
     print(result_schema)
     return result_schema

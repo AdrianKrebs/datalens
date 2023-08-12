@@ -1,9 +1,11 @@
 # Datalens
 
-Datalens is a web app that lets you filter any data with LLMs. 
-You can define any criteria and and input source, and the app will use an LLM model like GPT or Claude to surface the relevant data for your criteria.
-
-The current version is limited to job data, but future version will let you assess other data types like events, news, or any other data.
+Datalens is a web app that lets you filter any data with LLMs.
+LMs are really good at assessing unstructured data. This is an experiment to rank job postings by
+relevance for the specified criteria, without having to go through countless filter options.
+The current data source is the most recent "Who's Hiring" thread from Hacker News (more to come).
+The current version is limited to job data, but future version will let you assess other data types like events, news,
+or any other data.
 
 ## Requirements
 
