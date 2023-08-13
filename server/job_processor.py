@@ -52,17 +52,20 @@ def calculate_relevance_score(results, criteria):
 
 
 def assessJobs(properties):
+
+    # currently hardcoded, possibility to configure more sources coming soon
     url = 'http://hn.algolia.com/api/v1/items/36956867'
     response = requests.get(url)
 
     if response.status_code == 200:
         data = response.json()
-        children_posts = data['children']
+        api_result = data['children']
     else:
         print(f"Failed to fetch data. Status code: {response.status_code}")
         return
 
-    jobs = children_posts[:40]
+    record_limit = os.getenv("RECORD_LIMIT", 100)
+    jobs = api_result[:int(record_limit)] if record_limit else api_result
 
     # Load previously analyzed jobs and criteria if the file exists
     try:

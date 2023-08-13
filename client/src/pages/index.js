@@ -20,31 +20,31 @@ export default function ShowcaseHN() {
     const [propertyMode, setPropertyMode] = useState(null)
     const [fields, setFields] = useState([
         {
-            name: 'remote_from_where',
+            name: 'location',
             description:
                 "",
-            criteria: '',
+            criteria: 'on-site in San Francisco or remote in the US',
             type: 'must'
         },
         {
-            name: 'technologies',
+            name: 'technology stack',
             description:
                 "",
-            criteria: '',
+            criteria: "Python, React, GraphQL, Docker, Kubernetes",
             type: "",
         },
         {
             name: 'industry',
             description:
                 "",
-            criteria: '',
+            criteria: 'FinTech',
             type: "",
         },
         {
             name: 'salary',
             description:
                 "",
-            criteria: '',
+            criteria: '150k plus',
             type: "",
         },
     ])
