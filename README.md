@@ -50,4 +50,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the app.
 
+## Cost Warning
 
+Running this script continuously can
+result in high API usage if you process many jobs or records, so please use it responsibly. 
