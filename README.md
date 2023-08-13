@@ -27,6 +27,8 @@ Run the Flask server:
 
 ```
 cd server
+cp .env.example .env
+pip install -r requirements.txt
 py main
 ```
 
