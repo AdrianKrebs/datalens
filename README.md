@@ -54,3 +54,4 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 Running this script continuously can
 result in high API usage if you process many jobs or records, so please use it responsibly. 
+Processing 500 jobs with gpt-4 costs around $10.
