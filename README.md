@@ -7,6 +7,8 @@ The current data source is the most recent "Who's Hiring" thread from Hacker New
 The current version is limited to job data, but future version will let you assess other data types like events, news,
 or any other data.
 
+![Datalens Preview](https://github.com/AdrianKrebs/datalens/blob/master/client/public/preview.png)
+
 ## Requirements
 
 To run the app, you need:
