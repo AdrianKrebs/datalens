@@ -116,7 +116,9 @@ export default function ShowcaseHN() {
         try {
             const res = await axios.get(`${SERVER_ADDRESS}/load`)
             const data = res.data
-            setJobResults(data.results.sort((a, b) => b.relevanceScore - a.relevanceScore))
+            if (data.results?.length > 0) {
+                setJobResults(data.results.sort((a, b) => b.relevanceScore - a.relevanceScore));
+            }
             if (data.criteria?.length > 0) {
                 setFields(data.criteria);
             }
@@ -320,11 +322,11 @@ export default function ShowcaseHN() {
                 Analyze jobs
             </button>
             <hr/>
-            <h3 className="text-xl font-medium">{jobCount} jobs found</h3>
+            {!loading && (<h3 className="text-xl font-medium">{jobCount} jobs found</h3>)}
             {/*<!-- block: ready to try? -->*/}
             <div className="">
                 <div className="">
-                    {loading && <p className="text-center">Searching...<br/> Note: this can a few minutes</p>}
+                    {loading && <p className="text-center">Searching...<br/> Note: this can a few minutes...</p>}
                     {jobResults?.length > 0 && !loading && (
                         <ul
                             role="list"

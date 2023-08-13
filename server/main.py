@@ -31,6 +31,7 @@ logging.basicConfig(
     ]
 )
 
+
 def create_app():
     session_id = str(uuid.uuid4().hex)
     app = Flask(__name__)
@@ -42,7 +43,9 @@ def create_app():
 
     return app
 
+
 app = create_app()
+
 
 @app.route(f"/analyze", methods=["POST"])
 @cross_origin(supports_credentials=True)
@@ -60,15 +63,19 @@ def process_job():
 @app.route(f"/load", methods=["GET"])
 @cross_origin(supports_credentials=True)
 def load_jobs():
+    data_results = []
+    data_criteria = []
     try:
         with open('results.json', 'r') as json_file_results:
             data_results = json.load(json_file_results)
-        with open('criteria.json', 'r') as json_file_criteria:
-            data_criteria = json.load(json_file_criteria)
-        return jsonify({"results": data_results, "criteria": data_criteria})
     except Exception as e:
         logging.error(e)
-        return str(e)
+    try:
+        with open('criteria.json', 'r') as json_file_criteria:
+            data_criteria = json.load(json_file_criteria)
+    except Exception as e:
+        logging.error(e)
+    return jsonify({"results": data_results, "criteria": data_criteria})
 
 
 @app.route("/healthcheck", methods=["GET"])
@@ -76,6 +83,6 @@ def load_jobs():
 def healthcheck():
     return "OK"
 
+
 if __name__ == "__main__":
     app.run(debug=True, port="8080", threaded=True)
-

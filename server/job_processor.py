@@ -62,9 +62,9 @@ def assessJobs(properties):
         print(f"Failed to fetch data. Status code: {response.status_code}")
         return
 
-    jobs = children_posts[:100]
+    jobs = children_posts[:40]
 
-    # Load previously analyzed jobs if the file exists
+    # Load previously analyzed jobs and criteria if the file exists
     try:
         with open('results.json', 'r') as json_file_results:
             previous_results = json.load(json_file_results)
@@ -73,6 +73,7 @@ def assessJobs(properties):
         previous_ids = [result["id"] for result in previous_results]
     except FileNotFoundError:
         previous_criteria = None
+        previous_results = []
         previous_ids = []
 
         # Check if the criteria have changed
@@ -132,7 +133,7 @@ def use_openai(job, schema, properties):
         functions=[{"name": "classify_job", "parameters": schema}],
         function_call={"name": "classify_job"},
     )
-    print("tokens used: " + completion["usage"]["total_tokens"])
+    print("tokens used: ", completion["usage"]["total_tokens"])
     result_schema = json.loads(completion.choices[0].message.function_call.arguments)
     print(result_schema)
     return result_schema
