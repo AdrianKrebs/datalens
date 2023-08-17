@@ -14,7 +14,8 @@ Future version will let you add other sources and analyze other data types, such
 
 
 ## Limitations
-The relevance scoring works best with `gpt-4-0613` or `claude-2`. `gpt-3.5-turbo-0613` can be used, but the results are notably less relevant. 
+The relevance scoring works best with `gpt-4-0613` which returns granular scores between 0-1. 
+`claude-2` and `gpt-3.5-turbo-0613` can be used, but they often return binary scores of 0 or 1 for criteria, lacking the nuance to distinguish between partial and full matches. 
 
 
 ## Cost Warning
