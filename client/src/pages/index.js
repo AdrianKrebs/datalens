@@ -138,17 +138,6 @@ export default function ShowcaseHN() {
                 <div className="flex-1 px-3 py-2 text-2xl font-medium text-aubergine">
                     Datalens
                 </div>
-                <div className="flex gap-2 p-2 leading-none text-white shrink-0 place-items-center bg-aubergine">
-                    <div className="text-sm font-bold">by</div>
-                    <a
-                        href="https://kadoa.com"
-                        rel="noopener"
-                        target="_blank"
-                        className="rounded-sm hover:bg-electra/50"
-                    >
-                        <Image src={kadoaLogo} alt="Kadoa logo" width="101" height="33"/>
-                    </a>
-                </div>
             </div>
             <div className="">
                 LLMs are really good at assessing unstructured data. This is an experiment to rank job postings by
