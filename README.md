@@ -47,6 +47,21 @@ pip install -r requirements.txt
 py main
 ```
 
+
+### Configuration
+Add new job sources by updating sources_config.json. Example:
+```
+{
+    "name": "SourceName",
+    "endpoint": "API_ENDPOINT",
+    "handler": "handler_function_name",
+    "headers": {
+        "x-api-key": "YOUR_API_KEY"
+    }
+}
+```
+
+
 ### Client
 
 Navigate to the client directory and install Node dependencies:
