@@ -1,0 +1,15 @@
+[
+    {
+        "name": "HN",
+        "endpoint": "http://hn.algolia.com/api/v1/items/36956867",
+        "handler": "fetch_HN_data"
+    },
+    {
+        "name": "Anduril",
+        "endpoint": "https://services.kadoa.com/jobs/pages/64e74d936addab49669d6319?format=json",
+        "handler": "fetch_kadoa_data",
+        "headers": {
+            "x-api-key": ""
+        }
+    }
+]

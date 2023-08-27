@@ -28,6 +28,41 @@ openai.api_key = OPENAI_API_KEY
 OPENAI_API_MODEL = os.getenv("OPENAI_API_MODEL", "gpt-4-0613")
 assert OPENAI_API_MODEL, "OPENAI_API_MODEL environment variable is missing from .env"
 
+# Handler for fetching data from HN
+def fetch_HN_data(endpoint, headers=None):
+    response = requests.get(endpoint)
+    if response.status_code == 200:
+        data = response.json()
+        return data['children']
+    else:
+        print(f"Failed to fetch data from {endpoint}. Status code: {response.status_code}")
+        return []
+
+# Handler for another source (as an example)
+def fetch_kadoa_data(endpoint, headers=None):
+    response = requests.get(endpoint, headers=headers)
+    # Adjust the parsing logic if needed
+    jobs = []
+    if response.status_code == 200:
+        data = response.json()
+
+        for entry in data:
+            detail_data = entry["detailPageData"]
+            job = {
+                "id": detail_data["id"],
+                "text": {
+                    "title": detail_data.get("title"),
+                    "location": detail_data.get("jobLocation"),
+                    "description": detail_data["description"],
+                    "url": detail_data["url"],
+                }
+            }
+            jobs.append(job)
+    else:
+        print(f"Failed to fetch data from {endpoint}. Status code: {response.status_code}")
+
+    return jobs
+
 
 def map_frontend_to_api(frontend_criteria):
     api_criteria = {
@@ -52,20 +87,19 @@ def calculate_relevance_score(results, criteria):
 
 
 def assessJobs(properties):
+    # Load source configurations
+    with open('sources_config.json', 'r') as config_file:
+        sources = json.load(config_file)
 
-    # currently hardcoded, possibility to configure more sources coming soon
-    url = 'http://hn.algolia.com/api/v1/items/36956867'
-    response = requests.get(url)
-
-    if response.status_code == 200:
-        data = response.json()
-        api_result = data['children']
-    else:
-        print(f"Failed to fetch data. Status code: {response.status_code}")
-        return
+    all_jobs = []
+    for source in sources:
+        handler_function = globals()[source["handler"]]
+        headers = source.get("headers", {})
+        jobs_from_source = handler_function(source["endpoint"], headers)
+        all_jobs.extend(jobs_from_source)
 
     record_limit = os.getenv("RECORD_LIMIT", 100)
-    jobs = api_result[:int(record_limit)] if record_limit else api_result
+    jobs = all_jobs[:int(record_limit)] if record_limit else all_jobs
 
     # Load previously analyzed jobs and criteria if the file exists
     try:
