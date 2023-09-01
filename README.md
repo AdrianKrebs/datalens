@@ -1,4 +1,4 @@
-# Datalens: A New Approach to Job Searching
+# Datalens: Automate Job Search with AI
 
 ## Overview
 
