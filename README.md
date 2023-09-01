@@ -78,5 +78,10 @@ cd client
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the app.
+- Open [http://localhost:3000](http://localhost:3000) with your browser to see the app.
+- Define your ranking criteria
+- Click Analyze
 
+# Improvements
+- Currently, the application fetches all analysis results in one long REST call, which can lead to long waiting times. We should switch to streaming/web sockets.
+- The application is currently focused only on job data. We should make the system extensible to other types of data like events, products, etc.
