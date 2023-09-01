@@ -3,29 +3,5 @@
     "name": "HN",
     "endpoint": "http://hn.algolia.com/api/v1/items/36956867",
     "handler": "fetch_HN_data"
-  },
-  {
-    "name": "Anduril",
-    "endpoint": "https://services.kadoa.com/jobs/pages/64e74d936addab49669d6319?format=json",
-    "handler": "fetch_kadoa_data",
-    "headers": {
-      "x-api-key": "00000000-0000-0000-0000-000000000000"
-    }
-  },
-  {
-    "name": "Tesla",
-    "endpoint": "https://services.kadoa.com/jobs/pages/64eb63f6b91574b2149c0cae?format=json",
-    "handler": "fetch_kadoa_data",
-    "headers": {
-      "x-api-key": "00000000-0000-0000-0000-000000000000"
-    }
-  },
-  {
-    "name": "SpaceX",
-    "endpoint": "https://services.kadoa.com/jobs/pages/64eb5f1b7350bf774df35f7f?format=json",
-    "handler": "fetch_kadoa_data",
-    "headers": {
-      "x-api-key": "00000000-0000-0000-0000-000000000000"
-    }
   }
 ]

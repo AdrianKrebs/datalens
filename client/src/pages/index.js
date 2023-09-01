@@ -140,12 +140,15 @@ export default function ShowcaseHN() {
                 </div>
             </div>
             <div className="">
-                LLMs are really good at assessing unstructured data. This is an experiment to rank job postings by
-                relevance for the specified criteria, without having to go through countless filter options.
-                The current data source is the most recent "Who's Hiring" thread from Hacker News (more to come).
-            </div>
-            <div className="">
-                To start, add at least one property.
+                This is a personal experiment that uses LLMs to rank unstructured job data based on user-defined
+                criteria.
+                Traditional job search platforms rely on rigid filtering systems, but many users lack such concrete
+                criteria.
+                Datalens lets you define your preferences in a more natural way and then rates each job postings based
+                on the relevance.
+                <br/><br/>
+                Some criteria might be more important than others, so "must criteria" are weighted twice as much as
+                normal ones.
             </div>
             <hr/>
             {fields &&
