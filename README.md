@@ -9,6 +9,8 @@ Datalens lets you define your preferences in a more natural way and then rates e
 Some criteria might be more important than others, so "must criteria" are weighted twice as much as normal ones.
 
 ![Datalens Preview](https://github.com/AdrianKrebs/datalens/blob/master/client/public/preview.png)
+
+Claude-2 example result:
 ```
  Here are the scores for the provided job posting:
  
@@ -79,7 +81,7 @@ Let me know if should add any other companies. Also, happy to give you trial acc
 The relevance scoring works best with `gpt-4-0613` which returns granular scores between 0-1. `claude-2` works quite well too if you have access to it.
  `gpt-3.5-turbo-0613` can be used, but it often returns binary scores of 0 or 1 for criteria, lacking the nuance to distinguish between partial and full matches. 
 
-The current version uses `claude-2`, but you can just switch from `use_claude` to `use_openai`
+The default model is `gpt-3.5-turbo-0613` for cost reasons. You can switch from GPT to Claude by replacing `use_claude` with `use_openai`.
 
 
 ## Cost Warning

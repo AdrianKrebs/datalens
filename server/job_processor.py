@@ -25,7 +25,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 assert OPENAI_API_KEY, "OPENAI_API_KEY environment variable is missing from .env"
 openai.api_key = OPENAI_API_KEY
 
-OPENAI_API_MODEL = os.getenv("OPENAI_API_MODEL", "gpt-4-0613")
+OPENAI_API_MODEL = os.getenv("OPENAI_API_MODEL", "gpt-3.5-turbo-0613")
 assert OPENAI_API_MODEL, "OPENAI_API_MODEL environment variable is missing from .env"
 
 
@@ -152,7 +152,7 @@ def assessJobs(properties):
         if not criteria_changed and job["id"] in previous_ids:
             continue
         try:
-            res = use_claude(job, schema, properties)
+            res = use_openai(job, schema, properties)
             relevance_score = calculate_relevance_score(res, properties)
 
             results.append({"id": job["id"], "text": job["text"], "result": res,
@@ -200,8 +200,8 @@ def use_openai(job, schema, properties):
         functions=[{"name": "classify_job", "parameters": schema}],
         function_call={"name": "classify_job"},
     )
-    costs = calculate_cost(completion["usage"]["total_tokens"], OPENAI_API_MODEL)
-    print("costs: $" + costs)
+    costs = calculate_cost(completion["usage"], OPENAI_API_MODEL)
+    print(f"Costs: ${costs:.3f}")
     result_schema = json.loads(completion.choices[0].message.function_call.arguments)
     print(result_schema)
     return result_schema
