@@ -28,6 +28,36 @@ openai.api_key = OPENAI_API_KEY
 OPENAI_API_MODEL = os.getenv("OPENAI_API_MODEL", "gpt-4-0613")
 assert OPENAI_API_MODEL, "OPENAI_API_MODEL environment variable is missing from .env"
 
+
+def calculate_cost(usage, model):
+    cost_per_thousand_token = {
+        "gpt-4": {
+            "input": 0.03,
+            "output": 0.06
+        },
+        "gpt-4-0613": {
+            "input": 0.03,
+            "output": 0.06
+        },
+        "gpt-3.5-turbo": {
+            "input": 0.0015,
+            "output": 0.002
+        },
+        "gpt-3.5-turbo-0613": {
+            "input": 0.0015,
+            "output": 0.002
+        },
+        "gpt-3.5-turbo-16k": {
+            "input": 0.003,
+            "output": 0.004
+        }
+    }
+
+    cost = (usage['prompt_tokens'] / 1000 * cost_per_thousand_token[model]['input']) + \
+           (usage['completion_tokens'] / 1000 * cost_per_thousand_token[model]['output'])
+
+    return cost
+
 # Handler for fetching data from HN
 def fetch_HN_data(endpoint, headers=None):
     response = requests.get(endpoint)
@@ -98,7 +128,7 @@ def assessJobs(properties):
         jobs_from_source = handler_function(source["endpoint"], headers)
         all_jobs.extend(jobs_from_source)
 
-    record_limit = os.getenv("RECORD_LIMIT", 100)
+    record_limit = os.getenv("RECORD_LIMIT")
     jobs = all_jobs[:int(record_limit)] if record_limit else all_jobs
 
     # Load previously analyzed jobs and criteria if the file exists
@@ -122,7 +152,7 @@ def assessJobs(properties):
         if not criteria_changed and job["id"] in previous_ids:
             continue
         try:
-            res = use_openai(job, schema, properties)
+            res = use_claude(job, schema, properties)
             relevance_score = calculate_relevance_score(res, properties)
 
             results.append({"id": job["id"], "text": job["text"], "result": res,
@@ -170,7 +200,8 @@ def use_openai(job, schema, properties):
         functions=[{"name": "classify_job", "parameters": schema}],
         function_call={"name": "classify_job"},
     )
-    print("tokens used: ", completion["usage"]["total_tokens"])
+    costs = calculate_cost(completion["usage"]["total_tokens"], OPENAI_API_MODEL)
+    print("costs: $" + costs)
     result_schema = json.loads(completion.choices[0].message.function_call.arguments)
     print(result_schema)
     return result_schema

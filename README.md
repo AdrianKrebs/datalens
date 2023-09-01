@@ -2,27 +2,41 @@
 
 ## Overview
 
-This is a personal experiment that uses LLMs to rank and rate unstructured job data based on user-defined criteria. 
+This is a personal experiment that uses LLMs to rank unstructured job data based on user-defined criteria. 
 Traditional job search platforms rely on rigid filtering systems, but many users lack such concrete criteria.
 Datalens lets you define your preferences in a more natural way and then rates each job postings based on the relevance.
 
 Some criteria might be more important than others, so "must criteria" are weighted twice as much as normal ones.
 
-## Data Source and Extensibility
-The current version is limited to job data and the only source is the most recent "Who's Hiring" thread from Hacker News .
-Future version will let you add other sources and analyze other data types, such as events.
+![Datalens Preview](https://github.com/AdrianKrebs/datalens/blob/master/client/public/preview.png)
 
+### Data Sources
+You can add any job data source you like. 
+I've pre-configured it based on my needs with the most recent "Who's Hiring" thread from Hacker News and the scraped career pages of Tesla, SpaceX, and Anduril.
+I've used my own tool [Kadoa](https://kadoa.com) to fetch the job data from the company pages, but you can use any other traditional scraping method.
 
-## Limitations
-The relevance scoring works best with `gpt-4-0613` which returns granular scores between 0-1. 
-`claude-2` and `gpt-3.5-turbo-0613` can be used, but they often return binary scores of 0 or 1 for criteria, lacking the nuance to distinguish between partial and full matches. 
+Add new job sources by updating sources_config.json. Example:
+```
+{
+    "name": "SourceName",
+    "endpoint": "API_ENDPOINT",
+    "handler": "handler_function_name",
+    "headers": {
+        "x-api-key": "YOUR_API_KEY"
+    }
+}
+```
+
+## Model Choice
+The relevance scoring works best with `gpt-4-0613` which returns granular scores between 0-1. `claude-2` works quite well too if you have access to it.
+ `gpt-3.5-turbo-0613` can be used, but it often returns binary scores of 0 or 1 for criteria, lacking the nuance to distinguish between partial and full matches. 
 
 
 ## Cost Warning
 Running this script continuously can result in high API usage so please use it responsibly. 
-Processing 500 job postings with `gpt-4-0613` costs around $10.
+I'm logging the cost for each GPT call.
 
-![Datalens Preview](https://github.com/AdrianKrebs/datalens/blob/master/client/public/preview.png)
+
 
 ## Requirements
 
@@ -45,20 +59,6 @@ cd server
 cp .env.example .env
 pip install -r requirements.txt
 py main
-```
-
-
-### Configuration
-Add new job sources by updating sources_config.json. Example:
-```
-{
-    "name": "SourceName",
-    "endpoint": "API_ENDPOINT",
-    "handler": "handler_function_name",
-    "headers": {
-        "x-api-key": "YOUR_API_KEY"
-    }
-}
 ```
 
 
