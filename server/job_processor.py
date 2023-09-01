@@ -25,7 +25,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 assert OPENAI_API_KEY, "OPENAI_API_KEY environment variable is missing from .env"
 openai.api_key = OPENAI_API_KEY
 
-OPENAI_API_MODEL = os.getenv("OPENAI_API_MODEL", "gpt-3.5-turbo-0613")
+OPENAI_API_MODEL = os.getenv("OPENAI_API_MODEL", "gpt-4-0613")
 assert OPENAI_API_MODEL, "OPENAI_API_MODEL environment variable is missing from .env"
 
 
@@ -116,7 +116,7 @@ def calculate_relevance_score(results, criteria):
     return relevance_score
 
 
-def assessJobs(properties):
+def analyze_jobs(properties):
     # Load source configurations
     with open('sources_config.json', 'r') as config_file:
         sources = json.load(config_file)

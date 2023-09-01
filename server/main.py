@@ -11,7 +11,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS, cross_origin
 from flask import request
 
-from job_processor import assessJobs
+from job_processor import analyze_jobs
 
 logging.basicConfig(
     level=logging.INFO,
@@ -53,7 +53,7 @@ def process_job():
     try:
         params = request.get_json()
         properties = params["fields"]
-        answer = assessJobs(properties)
+        answer = analyze_jobs(properties)
         return answer
     except Exception as e:
         logging.error(e)

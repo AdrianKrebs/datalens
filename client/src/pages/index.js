@@ -132,7 +132,7 @@ export default function ShowcaseHN() {
 
     return (
         <div
-            className="grid w-full max-w-2xl gap-4 p-2 mx-auto antialiased font-normal leading-relaxed bg-white auto-rows-min scroll-smooth text-slate-800 sm:p-4">
+            className="grid w-full max-w-4xl gap-4 p-2 mx-auto antialiased font-normal leading-relaxed bg-white auto-rows-min scroll-smooth text-slate-800 sm:p-4">
             <div
                 className="flex w-full gap-2 bg-white border-2 rounded flex-nowrap place-items-center border-aubergine">
                 <div className="flex-1 px-3 py-2 text-2xl font-medium text-aubergine">
@@ -317,7 +317,7 @@ export default function ShowcaseHN() {
             {!loading && (<h3 className="text-xl font-medium">{jobCount} jobs found</h3>)}
             {/*<!-- block: ready to try? -->*/}
             <div className="">
-                <div className="">
+                <div className="max-w-4xl">
                     {loading && <p className="text-center">Searching...<br/> Note: this can a few minutes...</p>}
                     {jobResults?.length > 0 && !loading && (
                         <ul
