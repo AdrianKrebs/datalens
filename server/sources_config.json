@@ -1,7 +1,7 @@
 [
   {
     "name": "HN",
-    "endpoint": "http://hn.algolia.com/api/v1/items/36956867",
+    "endpoint": "http://hn.algolia.com/api/v1/items/37351667",
     "handler": "fetch_HN_data"
   }
 ]
